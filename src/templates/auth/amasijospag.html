@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/almojabana-removebg-preview.png" type="image/png">
+    <link rel="icon" type="images/svg+xml" href="icono.svg">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <title>Amasijos Arcabuco</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="menu container">
+            <img class="logo-1" src="" width="30px" id="imagen10" alt="">
+            <input type="checkbox" id="menu" />
+            <label for="menu">
+              
+            </label>
+            <nav class="navbar">
+                <div class="menu-1 ">
+                    <ul>
+                        <li><a href="">Inicio</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#informacion">Informacion</a></li>
+
+
+                    </ul>
+                </div>
+                <img class="logo-2" src="" width=3px alt="">
+
+                <div class="menu-2">
+                    <ul>
+                        <li><a href="#">Sesion</a></li>
+                    </ul>
+                    <div class="socials">
+                        <a href="">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s1.svg')}}" alt="facebook">
+                            </div>
+                        </a>
+                        <a href="">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s2.svg')}}" alt="twitter">
+                            </div>
+                        </a>
+                        <a href="">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s3.svg')}}" alt="instagram">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="header-content container">
+            <div class="swiper mySwiper-1">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <div class="slider">
+                            <div class="slider-txt">
+                                <h1>Repollas</h1>
+                                <p>3600*10unidades</p>
+                                <div class="botones">
+
+                                    <button class="add-to-cart" class="btn-1" data-name="Repollas" data-price="3600">
+                                        agregar al carrito</button>
+                                </div>
+                            </div>
+                            <div class="slider-img">
+                                <img src="{{url_for('static',filename= 'img/images/Repollas-X-50-Unid-removebg-preview.png')}}"
+                                    alt="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="slider">
+                            <div class="slider-txt">
+                                <h1>mantecada</h1>
+                                <p>12000 unidad</p>
+                                <div class="botones">
+                                    <button class="add-to-cart" class="btn-1" data-name="Repollas" data-price="12000">
+                                        agregar al carrito</button>
+
+                                </div>
+                            </div>
+                            <div class="slider-img">
+                                <img src="{{url_for('static',filename= 'img/images/mantecada.png')}}" id="img-food"
+                                    alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="slider">
+                            <div class="slider-txt">
+                                <h1>Almojabanas</h1>
+                                <p>$10000*10unidades</p>
+                                <div class="botones">
+                                    <button class="add-to-cart" class="btn-1" data-name="Repollas" data-price="10000">
+                                        agregar al carrito</button>
+
+                                </div>
+                            </div>
+                            <div class="slider-img">
+                                <img src="{{url_for('static',filename= 'img/images/almobajanamain.png')}}" id="img-food"
+                                    alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="products">
+        <div class="tabs container">
+
+            <input type="radio" name="tabs" id="tab1" checked="checked" class="tabInput " value="1">
+            <label for="tab1" class="tituloVariedad " id="servicios"   >NUESTRA VARIEDAD</label>
+            <div class="tab">
+                <div class="swiper mySwiper-2" id="swiper1">
+
+                    <div class="swiper-wrapper">
+
+                        <div class="swiper-slide">
+                            <div class="product">
+                                <div class="product-img">
+                                    <h4>Mantecadita</h4>
+                                    <img src="{{url_for('static',filename= 'img/images/mantecadita.png')}}"
+                                        id="img-food" alt="">
+                                </div>
+                                <div class="product-txt">
+                                    <h4>producto</h4>
+                                    <p>calidad premium</p>
+                                    <span class="price">$3000</span>
+                                    <button class="add-to-cart" id="boton-peque" data-name="Repollas" data-price="3000">
+                                        +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide">
+                            <div class="product">
+                                <div class="product-img">
+                                    <h4>nuevo </h4>
+                                    <img src="{{url_for('static',filename= 'img/images/cafe.png')}}" id="img-food"
+                                        alt="">
+
+                                </div>
+                                <div class="product-txt">
+                                    <h4>cafe</h4>
+                                    <p>calidad premium</p>
+                                    <span class="price">$2000</span>
+                                    <button class="add-to-cart" id="boton-peque" data-name="Repollas" data-price="2000">
+                                        +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide">
+                            <div class="product">
+                                <div class="product-img">
+                                    <h4>nuevos</h4>
+                                    <img src="{{url_for('static',filename= 'img/images/ponquesitos.png')}}"
+                                        id="img-food" alt="">
+
+                                </div>
+                                <div class="product-txt">
+                                    <h4>Ponquesitos</h4>
+                                    <p>calidad premium</p>
+                                    <span class="price">$3000 *6</span><br>
+                                    <button class="add-to-cart" id="boton-peque" data-name="Repollas" data-price="3000">
+                                        +</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide">
+                            <div class="product">
+                                <div class="product-img">
+                                    <h4>PROMOCION</h4>
+                                    <img src="{{url_for('static',filename= 'img/images/calados1.png')}}" id="img-food"
+                                        alt="">
+                                </div>
+                                <div class="product-txt">
+                                    <h4>Calados</h4>
+                                    <p>lleva 4 paga 3</p>
+                                    <span class="price">$4500*6</span>
+                                    <button class="add-to-cart" id="boton-peque" data-name="Repollas" data-price="4500">
+                                        +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide">
+                            <div class="product">
+                                <div class="product-img">
+                                    <h4>nuevo</h4>
+                                    <img src="{{url_for('static',filename= 'img/images/leche.png')}}" id="img-food">
+                                </div>
+                                <div class="product-txt">
+                                    <h4>Leche Entera</h4>
+                                    <p>calidad premium</p>
+                                    <span class="price">$4500</span>
+                                    <button class="add-to-cart" id="boton-peque" data-name="Repollas" data-price="4500">
+                                        +</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </main>
+
+    <section class="info container">
+        <div class="info-img">
+            <img src="{{url_for('static',filename= 'img/images/amasijosinfo.png')}}" id="img-food"()> 
+
+        </div>
+        <div class="info-txt">
+            <h2  id="informacion">Informacion</h2>
+            <h3>mision</h3>
+            <p>
+                Ofrecer amasijos artesanales elaborados con recetas familiares transmitidas por generaciones, llevando a
+                cada cliente el sabor y la tradición de Arcabuco.
+
+            <h3>vision</h3>
+            <p> Mantener viva la herencia de los amasijos de Arcabuco y convertirnos en un referente regional y nacional
+                de calidad y tradición artesanal.</p>
+
+            </p>
+            <a href="" class="btn-2">Mas informacion</a>
+        </div>
+    </section>
+
+    <section class="horario">
+        <div class="horario-info container">
+            <h2>Horario</h2>
+            <div class="horario-txt">
+                <div class="txt">
+                    <h4>calle 3 #7-41 Arcabuco</h4>
+                    <p>Somos una empresa de venta de productos al por mayor, ordena lo que desees</p>
+                    <p>Te esperamos</p>
+                </div>
+                <div class="txt">
+                    <h4>Horario</h4>
+                    <p>
+                        Lunes-Viernes:9am - 8pm
+                    </p>
+                    <p>
+                        Sabados-domingos:8am - 7pm
+                    </p>
+                </div>
+                <div class="txt">
+                    <h4>Telefono</h4>
+                    <p>
+                        3113754062
+                    </p>
+                    <p>
+                        3028611023
+                    </p>
+                </div>
+                <div class="txt">
+                    <h4>Redes Sociales</h4>
+                    <div class="socials">
+                        <a href="https://www.facebook.com/share/1Cp2kzzcWb/">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s1.svg')}}" alt="facebook" >
+                            </div>
+                        </a>
+                        <a href="">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s2.svg')}}" alt="twitter">
+                            </div>
+                        </a>
+                        <a href="">
+                            <div class="social">
+                                <img src="{{url_for('static',filename= 'img/images/s3.svg')}}" alt="instagram">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1984.8532325064866!2d-73.43821392055656!3d5.75532349693755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a75c0f72b1dbd%3A0x6d24be5a2b9cf7df!2sCl.%203%20%23%207-41%2C%20Arcabuco%2C%20Boyac%C3%A1!5e0!3m2!1sen!2sco!4v1757103306705!5m2!1sen!2sco"
+            width="100%" height="500px" class="map" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </section>
+
+
+<div class="div-form">
+    <h2 >FORMULARIO DE CONTACTO</h2>
+    <form  class="form-container" action="/submit" method="POST">
+        <label for="nombre"><h3  id="text-form">Nombre:</h3></label><br>
+        <input type="text"   placeholder="tu nombre:" id="nombre" name="nombre" required><br><br>
+
+        <label for="correo" ><h3 id="text-form">correo electronico</h3></label><br>
+        <input type="email" placeholder="example@.com" id="correo" name="correo" required><br><br>
+
+        <label for="telefono" ><h3 id="text-form">Teléfono:</h3></label><br>
+        <input type="tel" id="telefono" placeholder="##########" name="telefono" required><br><br>
+
+        <label for="ciudad"><h3 id="text-form">ciudad:</h3></label><br>
+        <input type="text" placeholder="de dónde eres?" id="ciudad" name="ciudad" required><br><br>
+
+        <button class="botton-form" type="submit">Enviar</button>
+    </form>
+    </div>
+
+
+
+    
+    <footer class="footer container">
+         <img  class="logo-2" src="{{url_for('static',filename= 'img/logo.png')}}" alt="facebook">
+        
+        
+        
+        
+        <div class="socials">
+            <a href="https://www.facebook.com/share/1Cp2kzzcWb/">
+                <div class="social">
+                    <img src="{{url_for('static',filename= 'img/images/s1.svg')}}" alt="facebook">
+                </div>
+            </a>
+            <a href="">
+                <div class="social">
+                    <img src="{{url_for('static',filename= 'img/images/s2.svg')}}" alt="twitter">
+                </div>
+            </a>
+            <a href="">
+                <div class="social">
+                    <img src="{{url_for('static',filename= 'img/images/s3.svg')}}" alt="instagram">
+                </div>
+            </a>
+        </div>
+    </footer>
+
+    <aside id="cart">
+        <h2>🛒 Carrito</h2>
+        <ul id="cart-items"></ul>
+        <p>Total: $<span id="cart-total">0</span></p>
+        <button id="checkout">Finalizar compra</button>
+    </aside>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+    <script src="{{ url_for('static',filename='js/script.js') }}"></script>> </script>
+
+</body>
+
+</html>
