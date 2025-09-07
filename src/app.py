@@ -1,21 +1,30 @@
-from flask import Flask ,render_template,request,redirect,url_for,flash
-from flask_mysqldb import MySQL
-from flask_login import LoginManager,login_user,logout_user,login_required
+from flask import Flask, render_template, request, redirect, url_for, flash
+import psycopg2
+from flask_login import LoginManager, login_user, logout_user, login_required
 from config import config
 
-#modelos
+# modelos
 from models.ModelUser import ModelUser
 
-#entities:
+# entities:
 from models.entities.User import User
 
 
+app = Flask(__name__)
 
+# PostgreSQL connection setup
+class DatabaseConnection:
+    def __init__(self, app):
+        self.app = app
+        self.connection = None
+        
+    def connect(self):
+        if self.connection is None or self.connection.closed:
+            self.connection = psycopg2.connect(self.app.config['DATABASE_URL'])
+        return self.connection
 
-app=Flask(__name__)
-
-db = MySQL(app) 
-login_manager_app=LoginManager(app)
+db = DatabaseConnection(app)
+login_manager_app = LoginManager(app)
 
 @login_manager_app.user_loader
 def load_user(id):
@@ -51,4 +60,4 @@ def home():
 
 if __name__=='__main__':
     app.config.from_object(config['DevelopmentConfig'])
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)
