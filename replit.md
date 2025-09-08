@@ -1,6 +1,6 @@
 # Overview
 
-This is a Flask web application for "Amasijos Arcabuco" that implements a basic authentication system with PostgreSQL database integration. The application provides user login functionality with session management using Flask-Login. It features a simple MVC architecture with user authentication, template rendering, and database connectivity for managing user accounts.
+This is a Flask web application for "Amasijos Arcabuco" that implements a comprehensive ERP-like system with PostgreSQL database integration. The application provides user authentication, product catalog with real-time stock management, shopping cart functionality, contact forms, and administrative panels. It features a complete MVC architecture with inventory control, order management, and responsive design for all devices.
 
 # User Preferences
 
@@ -39,6 +39,24 @@ Preferred communication style: Simple, everyday language.
 - **CSRF Protection**: Secret key configuration for session security
 - **Password Hashing**: Secure password storage using Werkzeug utilities
 - **Login Required Decorators**: Route protection for authenticated access
+
+## Inventory Management System (ERP Features)
+- **Real-time Stock Control**: Live inventory tracking with automatic stock updates
+- **Product Database**: Complete product catalog with prices, descriptions, and stock levels
+- **Purchase Validation**: Prevents overselling and validates stock availability before orders
+- **Visual Stock Indicators**: Color-coded stock levels (Green: normal, Yellow: low, Red: out of stock)
+- **Order Integration**: Automatic stock reduction when orders are processed
+- **Stock API**: RESTful endpoints for real-time stock queries
+
+## Recent Updates
+- **September 8, 2025**: Implemented complete inventory management system
+- **Key Features Added**:
+  - Products table with stock tracking
+  - Real-time stock validation
+  - Visual stock indicators in UI
+  - Automatic stock reduction on purchases
+  - Stock availability API endpoints
+  - Enhanced order processing with inventory control
 
 # External Dependencies
 
