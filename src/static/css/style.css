@@ -367,12 +367,17 @@ body {
 
 .info-img {
     width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .info-img img {
-    width: 500px;
-    height: 250px;
-
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
 }
 
 .info-txt {
@@ -860,9 +865,11 @@ input[type="tel"] {
     }
 
     .info-img img {
-        width: 400px;
-        height: 400px;
+        width: 100%;
+        max-width: 400px;
+        height: auto;
         margin-bottom: 25px;
+        border-radius: 12px;
     }
 
     .info-txt {
