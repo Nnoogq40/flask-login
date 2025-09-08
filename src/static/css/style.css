@@ -124,6 +124,33 @@ body {
     color: #db241b;
 }
 
+/* Estilos para botones de admin */
+.menu .navbar ul li a[href*="contacts"] {
+    background-color: #ff6b35 !important;
+    border-radius: 8px;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.menu .navbar ul li a[href*="contacts"]:hover {
+    background-color: #e55a2b !important;
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+.menu .navbar ul li a[href*="orders"] {
+    background-color: #28a745 !important;
+    border-radius: 8px;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.menu .navbar ul li a[href*="orders"]:hover {
+    background-color: #218838 !important;
+    color: white !important;
+    transform: translateY(-2px);
+}
+
 #menu {
     display: none;
 
@@ -679,6 +706,7 @@ input[type="tel"] {
     .menu {
         padding: 20px;
         justify-content: space-between;
+        position: relative;
     }
 
     .menu-2 {
@@ -694,7 +722,14 @@ input[type="tel"] {
     }
 
     .menu label {
-        display: initial;
+        display: block;
+        cursor: pointer;
+        color: white;
+        font-size: 24px;
+    }
+
+    .menu label:before {
+        content: "☰";
     }
 
     .menu .navbar {
@@ -704,18 +739,48 @@ input[type="tel"] {
         right: 0;
         background-color: #181818;
         display: none;
-
+        z-index: 1000;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .menu .nabvar ul li {
+    .menu .navbar ul {
+        flex-direction: column;
+        align-items: center;
+    }
 
+    .menu .navbar ul li {
         width: 100%;
+        margin: 10px 0;
+        text-align: center;
+    }
 
+    .menu .navbar ul li a {
+        display: block;
+        padding: 15px;
+        width: 100%;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
 
+    .menu .navbar ul li a:hover {
+        background-color: #333;
+    }
+    
+    /* Estilos especiales para botones de admin en móvil */
+    .menu .navbar ul li a[href*="contacts"],
+    .menu .navbar ul li a[href*="orders"] {
+        margin: 5px 0;
+        font-size: 14px;
+        padding: 12px;
+        display: inline-block;
+        width: auto;
+        min-width: 120px;
     }
 
     #menu:checked~.navbar {
-        display: initial;
+        display: block;
     }
 
     .header-content {
