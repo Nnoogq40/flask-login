@@ -7,11 +7,13 @@ from config import config
 from models.ModelUser import ModelUser
 from models.ModelContact import ModelContact
 from models.ModelOrder import ModelOrder
+from models.ModelProduct import ModelProduct
 
 # entities:
 from models.entities.User import User
 from models.entities.Contact import Contact
 from models.entities.Order import Order, OrderItem
+from models.entities.Product import Product
 
 
 app = Flask(__name__)
@@ -59,7 +61,11 @@ def login():
      return render_template('auth/login.html')
 @app.route('/home')
 def home():
-   return render_template("auth/amasijospag.html")     
+   try:
+       products = ModelProduct.get_all_products(db)
+       return render_template("auth/amasijospag.html", products=products)
+   except Exception as ex:
+       return render_template("auth/amasijospag.html", products=[])     
 
 @app.route('/submit', methods=['POST'])
 def submit_contact():
@@ -144,6 +150,17 @@ def order_details(order_id):
                 'quantity': item.quantity
             })
         return {'success': True, 'items': items_data}
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
+@app.route('/get_stock/<product_name>')
+def get_stock(product_name):
+    try:
+        product = ModelProduct.get_by_name(db, product_name)
+        if product:
+            return {'success': True, 'stock': product.stock}
+        else:
+            return {'success': False, 'error': 'Producto no encontrado'}, 404
     except Exception as ex:
         return {'success': False, 'error': str(ex)}, 400
 

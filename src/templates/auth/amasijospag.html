@@ -68,8 +68,10 @@
                             <div class="slider-txt">
                                 <h1>Repollas</h1>
                                 <p>3600*10unidades</p>
+                                <small class="stock-info" style="color: #28a745; font-size: 14px; display: block; margin: 8px 0;">
+                                    📦 Stock: <span id="stock-Repollas">{{ products|selectattr('name', 'equalto', 'Repollas')|first|attr('stock') if products|selectattr('name', 'equalto', 'Repollas')|first else 0 }}</span> disponibles
+                                </small>
                                 <div class="botones">
-
                                     <button class="add-to-cart" class="btn-1" data-name="Repollas" data-price="3600">
                                         agregar al carrito</button>
                                 </div>
@@ -86,6 +88,9 @@
                             <div class="slider-txt">
                                 <h1>mantecada</h1>
                                 <p>12000 unidad</p>
+                                <small class="stock-info" style="color: #28a745; font-size: 14px; display: block; margin: 8px 0;">
+                                    📦 Stock: <span id="stock-mantecada">{{ products|selectattr('name', 'equalto', 'mantecada')|first|attr('stock') if products|selectattr('name', 'equalto', 'mantecada')|first else 0 }}</span> disponibles
+                                </small>
                                 <div class="botones">
                                     <button class="add-to-cart" class="btn-1" data-name="mantecada" data-price="12000">
                                         agregar al carrito</button>
@@ -103,8 +108,11 @@
                             <div class="slider-txt">
                                 <h1>Almojabanas</h1>
                                 <p>$10000*10unidades</p>
+                                <small class="stock-info" style="color: #28a745; font-size: 14px; display: block; margin: 8px 0;">
+                                    📦 Stock: <span id="stock-almojabana">{{ products|selectattr('name', 'equalto', 'almojabana')|first|attr('stock') if products|selectattr('name', 'equalto', 'almojabana')|first else 0 }}</span> disponibles
+                                </small>
                                 <div class="botones">
-                                    <button class="add-to-cart" class="btn-1" data-name="Almojabana" data-price="10000">
+                                    <button class="add-to-cart" class="btn-1" data-name="almojabana" data-price="10000">
                                         agregar al carrito</button>
 
                                 </div>
@@ -148,6 +156,9 @@
                                     <h4>producto</h4>
                                     <p>calidad premium</p>
                                     <span class="price">$3000</span>
+                                    <small class="stock-info" style="color: #28a745; font-size: 12px; display: block; margin: 5px 0;">
+                                        📦 Stock: <span id="stock-mantecadita">{{ products|selectattr('name', 'equalto', 'mantecadita')|first|attr('stock') if products|selectattr('name', 'equalto', 'mantecadita')|first else 0 }}</span> disponibles
+                                    </small>
                                     <button class="add-to-cart" id="boton-peque" data-name="mantecadita" data-price="3000">
                                         +</button>
                                 </div>
@@ -166,6 +177,9 @@
                                     <h4>cafe</h4>
                                     <p>calidad premium</p>
                                     <span class="price">$2000</span>
+                                    <small class="stock-info" style="color: #28a745; font-size: 12px; display: block; margin: 5px 0;">
+                                        📦 Stock: <span id="stock-cafe">{{ products|selectattr('name', 'equalto', 'cafe')|first|attr('stock') if products|selectattr('name', 'equalto', 'cafe')|first else 0 }}</span> disponibles
+                                    </small>
                                     <button class="add-to-cart" id="boton-peque" data-name="cafe" data-price="2000">
                                         +</button>
                                 </div>
@@ -184,6 +198,9 @@
                                     <h4>Ponquesitos</h4>
                                     <p>calidad premium</p>
                                     <span class="price">$3000 *6</span><br>
+                                    <small class="stock-info" style="color: #28a745; font-size: 12px; display: block; margin: 5px 0;">
+                                        📦 Stock: <span id="stock-ponquesito">{{ products|selectattr('name', 'equalto', 'ponquesito')|first|attr('stock') if products|selectattr('name', 'equalto', 'ponquesito')|first else 0 }}</span> disponibles
+                                    </small>
                                     <button class="add-to-cart" id="boton-peque" data-name="ponquesito" data-price="3000">
                                         +</button>
 
@@ -202,6 +219,9 @@
                                     <h4>Calados</h4>
                                     <p>lleva 4 paga 3</p>
                                     <span class="price">$4500*6</span>
+                                    <small class="stock-info" style="color: #28a745; font-size: 12px; display: block; margin: 5px 0;">
+                                        📦 Stock: <span id="stock-calado">{{ products|selectattr('name', 'equalto', 'calado')|first|attr('stock') if products|selectattr('name', 'equalto', 'calado')|first else 0 }}</span> disponibles
+                                    </small>
                                     <button class="add-to-cart" id="boton-peque" data-name="calado" data-price="4500">
                                         +</button>
                                 </div>
@@ -218,6 +238,9 @@
                                     <h4>Leche Entera</h4>
                                     <p>calidad premium</p>
                                     <span class="price">$4500</span>
+                                    <small class="stock-info" style="color: #28a745; font-size: 12px; display: block; margin: 5px 0;">
+                                        📦 Stock: <span id="stock-leche">{{ products|selectattr('name', 'equalto', 'leche')|first|attr('stock') if products|selectattr('name', 'equalto', 'leche')|first else 0 }}</span> disponibles
+                                    </small>
                                     <button class="add-to-cart" id="boton-peque" data-name="leche" data-price="4500">
                                         +</button>
                                 </div>
