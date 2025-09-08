@@ -1,10 +1,16 @@
 from .entities.Order import Order, OrderItem
+from .ModelProduct import ModelProduct
 
 class ModelOrder():
     
     @classmethod
     def save_order(cls, db, order, items):
+        connection = None
+        cursor = None
         try:
+            # Verificar stock disponible antes de procesar la orden
+            ModelProduct.check_stock_availability(db, items)
+            
             connection = db.connect()
             cursor = connection.cursor()
             
@@ -14,18 +20,24 @@ class ModelOrder():
             cursor.execute(sql_order, (order.customer_phone, order.customer_name, order.total_amount, order.status))
             order_id = cursor.fetchone()[0]
             
-            # Insertar los productos de la orden
+            # Insertar los productos de la orden y reducir stock
             for item in items:
                 sql_item = """INSERT INTO order_items (order_id, product_name, product_price, quantity) 
                              VALUES (%s, %s, %s, %s)"""
                 cursor.execute(sql_item, (order_id, item.product_name, item.product_price, item.quantity))
+                
+                # Reducir stock del producto
+                ModelProduct.update_stock(db, item.product_name, item.quantity)
             
             connection.commit()
-            cursor.close()
+            if cursor:
+                cursor.close()
             return order_id
         except Exception as ex:
-            connection.rollback()
-            cursor.close()
+            if connection:
+                connection.rollback()
+            if cursor:
+                cursor.close()
             raise Exception(ex)
     
     @classmethod
