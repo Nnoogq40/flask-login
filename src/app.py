@@ -5,9 +5,11 @@ from config import config
 
 # modelos
 from models.ModelUser import ModelUser
+from models.ModelContact import ModelContact
 
 # entities:
 from models.entities.User import User
+from models.entities.Contact import Contact
 
 
 app = Flask(__name__)
@@ -57,6 +59,37 @@ def login():
 def home():
    return render_template("auth/amasijospag.html")     
 
+@app.route('/submit', methods=['POST'])
+def submit_contact():
+    try:
+        # Obtener los datos del formulario
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        telefono = request.form['telefono']
+        ciudad = request.form['ciudad']
+        
+        # Crear objeto Contact
+        contact = Contact(0, nombre, correo, telefono, ciudad)
+        
+        # Guardar en la base de datos
+        ModelContact.save_contact(db, contact)
+        
+        flash("¡Mensaje enviado correctamente! Pronto nos pondremos en contacto contigo.")
+        return redirect(url_for('home'))
+        
+    except Exception as ex:
+        flash("Error al enviar el mensaje. Por favor intenta de nuevo.")
+        return redirect(url_for('home'))
+
+@app.route('/contacts')
+@login_required
+def view_contacts():
+    try:
+        contacts = ModelContact.get_all_contacts(db)
+        return render_template("auth/contacts.html", contacts=contacts)
+    except Exception as ex:
+        flash("Error al cargar los contactos.")
+        return redirect(url_for('home'))
 
 if __name__=='__main__':
     app.config.from_object(config['DevelopmentConfig'])
