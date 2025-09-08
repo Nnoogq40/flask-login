@@ -91,10 +91,38 @@ document.querySelectorAll('.add-to-cart').forEach(button => {
 });
 
 /*compra via whatsap*/
-document.getElementById("checkout").addEventListener("click", () => {
+document.getElementById("checkout").addEventListener("click", async () => {
     if (cart.length === 0) {
         alert("Tu carrito está vacío.");
         return;
+    }
+
+    try {
+        // Guardar orden en la base de datos
+        const orderData = {
+            items: cart,
+            total: total,
+            phone: "573028611023",
+            name: "Cliente desde web"
+        };
+
+        const response = await fetch('/save_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            console.log('Orden guardada con ID:', result.order_id);
+        } else {
+            console.warn('Error al guardar orden:', result.error);
+        }
+    } catch (error) {
+        console.warn('Error de conexión al guardar orden:', error);
     }
 
     // Crear el mensaje con los productos
@@ -112,4 +140,9 @@ document.getElementById("checkout").addEventListener("click", () => {
 
     // Redirigir a WhatsApp
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank");
+    
+    // Limpiar carrito después del checkout
+    cart = [];
+    total = 0;
+    updateCart();
 });

@@ -131,6 +131,22 @@ def view_orders():
         flash("Error al cargar las órdenes.")
         return redirect(url_for('home'))
 
+@app.route('/order_details/<int:order_id>')
+@login_required
+def order_details(order_id):
+    try:
+        items = ModelOrder.get_order_details(db, order_id)
+        items_data = []
+        for item in items:
+            items_data.append({
+                'product_name': item.product_name,
+                'product_price': float(item.product_price),
+                'quantity': item.quantity
+            })
+        return {'success': True, 'items': items_data}
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
 if __name__=='__main__':
     app.config.from_object(config['DevelopmentConfig'])
     app.run(host='0.0.0.0', port=5000, debug=True)
