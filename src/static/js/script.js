@@ -79,16 +79,61 @@ function updateCart() {
 }
 
 document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
         let name = button.getAttribute('data-name');
         let price = parseFloat(button.getAttribute('data-price'));
 
-        cart.push({ name, price });
-        total += price;
+        try {
+            // Verificar stock disponible
+            const response = await fetch(`/get_stock/${name}`);
+            const data = await response.json();
+            
+            if (!data.success || data.stock <= 0) {
+                alert(`Lo sentimos, "${name}" está agotado.`);
+                return;
+            }
+            
+            // Contar cuántas veces ya está este producto en el carrito
+            const cartQuantity = cart.filter(item => item.name === name).length;
+            
+            if (cartQuantity >= data.stock) {
+                alert(`Solo hay ${data.stock} unidades disponibles de "${name}".`);
+                return;
+            }
 
-        updateCart();
+            cart.push({ name, price });
+            total += price;
+
+            updateCart();
+            
+            // Actualizar stock mostrado en pantalla
+            updateStockDisplay(name, data.stock - (cartQuantity + 1));
+            
+        } catch (error) {
+            console.error('Error verificando stock:', error);
+            alert('Error al verificar stock. Intenta de nuevo.');
+        }
     });
 });
+
+// Función para actualizar stock en pantalla
+function updateStockDisplay(productName, newStock) {
+    const stockElement = document.getElementById(`stock-${productName}`);
+    if (stockElement) {
+        stockElement.textContent = newStock;
+        
+        // Cambiar color si stock es bajo
+        const stockInfo = stockElement.parentElement;
+        if (newStock <= 0) {
+            stockInfo.style.color = '#dc3545'; // Rojo
+            stockInfo.innerHTML = `📦 Stock: <span id="stock-${productName}">0</span> - AGOTADO`;
+        } else if (newStock <= 3) {
+            stockInfo.style.color = '#ffc107'; // Amarillo
+        } else {
+            stockInfo.style.color = '#28a745'; // Verde
+        }
+    }
+}
 
 /*compra via whatsap*/
 document.getElementById("checkout").addEventListener("click", async () => {
