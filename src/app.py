@@ -6,10 +6,12 @@ from config import config
 # modelos
 from models.ModelUser import ModelUser
 from models.ModelContact import ModelContact
+from models.ModelOrder import ModelOrder
 
 # entities:
 from models.entities.User import User
 from models.entities.Contact import Contact
+from models.entities.Order import Order, OrderItem
 
 
 app = Flask(__name__)
@@ -89,6 +91,44 @@ def view_contacts():
         return render_template("auth/contacts.html", contacts=contacts)
     except Exception as ex:
         flash("Error al cargar los contactos.")
+        return redirect(url_for('home'))
+
+@app.route('/save_order', methods=['POST'])
+def save_order():
+    try:
+        data = request.get_json()
+        
+        # Datos del cliente (opcionales por ahora)
+        customer_phone = data.get('phone', 'Vía WhatsApp')
+        customer_name = data.get('name', 'Cliente')
+        total_amount = data.get('total', 0)
+        cart_items = data.get('items', [])
+        
+        # Crear orden
+        order = Order(0, customer_phone, customer_name, total_amount)
+        
+        # Crear items de la orden
+        items = []
+        for item in cart_items:
+            order_item = OrderItem(0, 0, item['name'], item['price'], 1)
+            items.append(order_item)
+        
+        # Guardar en base de datos
+        order_id = ModelOrder.save_order(db, order, items)
+        
+        return {'success': True, 'order_id': order_id}
+        
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
+@app.route('/orders')
+@login_required
+def view_orders():
+    try:
+        orders = ModelOrder.get_all_orders(db)
+        return render_template("auth/orders.html", orders=orders)
+    except Exception as ex:
+        flash("Error al cargar las órdenes.")
         return redirect(url_for('home'))
 
 if __name__=='__main__':
