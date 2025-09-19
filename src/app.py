@@ -89,6 +89,17 @@ def submit_contact():
         flash("Error al enviar el mensaje. Por favor intenta de nuevo.")
         return redirect(url_for('home'))
 
+@app.route('/admin')
+@login_required
+def admin_panel():
+    try:
+        contacts = ModelContact.get_all_contacts(db)
+        orders = ModelOrder.get_all_orders(db)
+        return render_template("auth/admin_panel.html", contacts=contacts, orders=orders)
+    except Exception as ex:
+        flash("Error al cargar el panel administrativo.")
+        return redirect(url_for('home'))
+
 @app.route('/contacts')
 @login_required
 def view_contacts():

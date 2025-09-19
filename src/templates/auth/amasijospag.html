@@ -27,17 +27,14 @@
                         <li><a href="">Inicio</a></li>
                         <li><a href="#servicios">Servicios</a></li>
                         <li><a href="#informacion">Informacion</a></li>
-                        <li><a href="{{ url_for('view_contacts') }}" style="background-color: #ff6b35; padding: 5px 10px; border-radius: 5px; color: white;">📩 Mensajes</a></li>
-                        <li><a href="{{ url_for('view_orders') }}" style="background-color: #28a745; padding: 5px 10px; border-radius: 5px; color: white;">🛒 Órdenes</a></li>
-
-
                     </ul>
                 </div>
                 <img class="logo-2" src="" width=3px alt="">
 
                 <div class="menu-2">
                     <ul>
-                        <li><a href="#">Sesion</a></li>
+                        <li><a href="{{ url_for('admin_panel') }}" style="background-color: #6c757d; padding: 8px 15px; border-radius: 20px; color: white; text-decoration: none; font-weight: bold;">
+                            <i class="fas fa-user-cog"></i> Panel Admin</a></li>
                     </ul>
                     <div class="socials">
                         <a href="">
