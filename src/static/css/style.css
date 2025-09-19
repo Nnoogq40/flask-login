@@ -935,6 +935,39 @@ input[type="tel"] {
 
     }
 
+    /* === CARRITO RESPONSIVE PARA MÓVILES === */
+    #cart {
+        width: 280px !important;
+        max-height: 40vh !important;
+        right: 10px !important;
+        bottom: 10px !important;
+        padding: 10px !important;
+    }
 
+    #cart h2 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
 
+    #cart li {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        margin-bottom: 6px !important;
+    }
+
+    #cart p {
+        font-size: 14px !important;
+        margin-top: 8px !important;
+    }
+
+    #checkout {
+        padding: 8px !important;
+        font-size: 14px !important;
+        margin-top: 10px !important;
+    }
+
+    #cart ul {
+        max-height: 120px;
+        overflow-y: auto;
+    }
 }
