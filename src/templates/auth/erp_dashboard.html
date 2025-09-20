@@ -130,8 +130,11 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5><i class="fas fa-list"></i> Transacciones Recientes</h5>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTransaccion">
+                                <i class="fas fa-plus"></i> Nueva
+                            </button>
                         </div>
                         <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                             {% for transaction in transactions[:10] %}
@@ -211,8 +214,14 @@
         <!-- Empleados -->
         <div class="tab-pane fade" id="empleados" role="tabpanel">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="fas fa-users"></i> Recursos Humanos</h5>
+                    <div>
+                        <input type="text" id="searchEmpleados" class="form-control form-control-sm d-inline-block me-2" style="width: 200px;" placeholder="🔍 Buscar empleado...">
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalEmpleado">
+                            <i class="fas fa-plus"></i> Nuevo Empleado
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -256,8 +265,14 @@
         <!-- Proveedores -->
         <div class="tab-pane fade" id="proveedores" role="tabpanel">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="fas fa-truck"></i> Gestión de Proveedores</h5>
+                    <div>
+                        <input type="text" id="searchProveedores" class="form-control form-control-sm d-inline-block me-2" style="width: 200px;" placeholder="🔍 Buscar proveedor...">
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalProveedor">
+                            <i class="fas fa-plus"></i> Nuevo Proveedor
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -434,6 +449,303 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Búsqueda en tiempo real para empleados
+    document.getElementById('searchEmpleados').addEventListener('input', function() {
+        filterTable('empleados', this.value);
+    });
+
+    // Búsqueda en tiempo real para proveedores
+    document.getElementById('searchProveedores').addEventListener('input', function() {
+        filterTable('proveedores', this.value);
+    });
+
+    function filterTable(tabId, searchValue) {
+        const table = document.querySelector(`#${tabId} table tbody`);
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const text = row.textContent.toLowerCase();
+            
+            if (text.includes(searchValue.toLowerCase())) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // Función para mostrar notificaciones
+    function showToast(message, type = 'success') {
+        const toastHtml = `
+            <div class="toast align-items-center text-white bg-${type} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i> ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        const toastContainer = document.getElementById('toastContainer');
+        toastContainer.innerHTML = toastHtml;
+        
+        const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+        toast.show();
+    }
 });
+
+// Funciones para enviar formularios
+async function submitEmpleado() {
+    const formData = new FormData(document.getElementById('formEmpleado'));
+    
+    try {
+        const response = await fetch('/add_employee', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            showToast('¡Empleado agregado exitosamente!');
+            bootstrap.Modal.getInstance(document.getElementById('modalEmpleado')).hide();
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast('Error al agregar empleado', 'danger');
+        }
+    } catch (error) {
+        showToast('Error de conexión', 'danger');
+    }
+}
+
+async function submitProveedor() {
+    const formData = new FormData(document.getElementById('formProveedor'));
+    
+    try {
+        const response = await fetch('/add_supplier', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            showToast('¡Proveedor agregado exitosamente!');
+            bootstrap.Modal.getInstance(document.getElementById('modalProveedor')).hide();
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast('Error al agregar proveedor', 'danger');
+        }
+    } catch (error) {
+        showToast('Error de conexión', 'danger');
+    }
+}
+
+async function submitTransaccion() {
+    const formData = new FormData(document.getElementById('formTransaccion'));
+    
+    try {
+        const response = await fetch('/add_transaction', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            showToast('¡Transacción registrada exitosamente!');
+            bootstrap.Modal.getInstance(document.getElementById('modalTransaccion')).hide();
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast('Error al registrar transacción', 'danger');
+        }
+    } catch (error) {
+        showToast('Error de conexión', 'danger');
+    }
+}
 </script>
+
+<!-- Container para notificaciones -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+</div>
+
+<!-- Modal Empleado -->
+<div class="modal fade" id="modalEmpleado" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus"></i> Nuevo Empleado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEmpleado">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo *</label>
+                        <input type="text" class="form-control" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cargo *</label>
+                        <select class="form-control" name="cargo" required>
+                            <option value="">Seleccionar cargo...</option>
+                            <option value="Gerente">Gerente</option>
+                            <option value="Panadero">Panadero</option>
+                            <option value="Vendedor">Vendedor</option>
+                            <option value="Asistente">Asistente</option>
+                            <option value="Cajero">Cajero</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Salario *</label>
+                                <input type="number" class="form-control" name="salario" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" name="telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Contratación</label>
+                        <input type="date" class="form-control" name="fecha_contratacion" value="{{ today }}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="submitEmpleado()">
+                    <i class="fas fa-save"></i> Guardar Empleado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Proveedor -->
+<div class="modal fade" id="modalProveedor" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-truck"></i> Nuevo Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formProveedor">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Contacto *</label>
+                        <input type="text" class="form-control" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Empresa *</label>
+                        <input type="text" class="form-control" name="empresa" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" name="telefono">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+                        <textarea class="form-control" name="direccion" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="submitProveedor()">
+                    <i class="fas fa-save"></i> Guardar Proveedor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Transacción -->
+<div class="modal fade" id="modalTransaccion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-money-bill"></i> Nueva Transacción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formTransaccion">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo *</label>
+                        <select class="form-control" name="tipo" required>
+                            <option value="">Seleccionar tipo...</option>
+                            <option value="ingreso">💰 Ingreso</option>
+                            <option value="gasto">💸 Gasto</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción *</label>
+                        <input type="text" class="form-control" name="descripcion" required placeholder="Ej: Pago servicios luz, Venta mayorista...">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Monto *</label>
+                                <input type="number" class="form-control" name="monto" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-control" name="categoria">
+                                    <option value="ventas">Ventas</option>
+                                    <option value="servicios">Servicios</option>
+                                    <option value="materia_prima">Materia Prima</option>
+                                    <option value="nomina">Nómina</option>
+                                    <option value="mantenimiento">Mantenimiento</option>
+                                    <option value="otros">Otros</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" class="form-control" name="fecha_transaccion" value="{{ today }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Método de Pago</label>
+                                <select class="form-control" name="metodo_pago">
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="transferencia">Transferencia</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitTransaccion()">
+                    <i class="fas fa-save"></i> Registrar Transacción
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

@@ -164,6 +164,80 @@ def erp_dashboard():
         flash("Error al cargar el dashboard ERP.")
         return redirect(url_for('home'))
 
+@app.route('/add_employee', methods=['POST'])
+@login_required
+def add_employee():
+    try:
+        # Obtener datos del formulario
+        nombre = request.form['nombre']
+        cargo = request.form['cargo']
+        salario = float(request.form['salario'])
+        telefono = request.form.get('telefono', '')
+        email = request.form.get('email', '')
+        fecha_contratacion = request.form.get('fecha_contratacion')
+        
+        # Insertar en base de datos
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            INSERT INTO employees (nombre, cargo, salario, telefono, email, fecha_contratacion)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (nombre, cargo, salario, telefono, email, fecha_contratacion))
+        db.connection.commit()
+        cursor.close()
+        
+        return {'success': True}
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
+@app.route('/add_supplier', methods=['POST'])
+@login_required
+def add_supplier():
+    try:
+        # Obtener datos del formulario
+        nombre = request.form['nombre']
+        empresa = request.form['empresa']
+        telefono = request.form.get('telefono', '')
+        email = request.form.get('email', '')
+        direccion = request.form.get('direccion', '')
+        
+        # Insertar en base de datos
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            INSERT INTO suppliers (nombre, empresa, telefono, email, direccion)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (nombre, empresa, telefono, email, direccion))
+        db.connection.commit()
+        cursor.close()
+        
+        return {'success': True}
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
+@app.route('/add_transaction', methods=['POST'])
+@login_required
+def add_transaction():
+    try:
+        # Obtener datos del formulario
+        tipo = request.form['tipo']
+        descripcion = request.form['descripcion']
+        monto = float(request.form['monto'])
+        categoria = request.form.get('categoria', 'otros')
+        fecha_transaccion = request.form.get('fecha_transaccion')
+        metodo_pago = request.form.get('metodo_pago', 'efectivo')
+        
+        # Insertar en base de datos
+        cursor = db.connection.cursor()
+        cursor.execute("""
+            INSERT INTO transactions (tipo, descripcion, monto, categoria, fecha_transaccion, metodo_pago)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (tipo, descripcion, monto, categoria, fecha_transaccion, metodo_pago))
+        db.connection.commit()
+        cursor.close()
+        
+        return {'success': True}
+    except Exception as ex:
+        return {'success': False, 'error': str(ex)}, 400
+
 @app.route('/contacts')
 @login_required
 def view_contacts():
