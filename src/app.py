@@ -100,6 +100,70 @@ def admin_panel():
         flash("Error al cargar el panel administrativo.")
         return redirect(url_for('home'))
 
+@app.route('/erp')
+@login_required
+def erp_dashboard():
+    try:
+        # Obtener datos para el dashboard
+        contacts = ModelContact.get_all_contacts(db)
+        orders = ModelOrder.get_all_orders(db)
+        products = ModelProduct.get_all_products(db)
+        
+        # Obtener datos financieros
+        cursor = db.connection.cursor()
+        
+        # Empleados
+        cursor.execute("SELECT * FROM employees WHERE activo = true ORDER BY fecha_contratacion DESC")
+        employees_data = cursor.fetchall()
+        employees = []
+        for emp in employees_data:
+            employees.append({
+                'id': emp[0], 'nombre': emp[1], 'cargo': emp[2], 
+                'salario': emp[3], 'telefono': emp[4], 'email': emp[5],
+                'fecha_contratacion': emp[6], 'activo': emp[7]
+            })
+        
+        # Proveedores
+        cursor.execute("SELECT * FROM suppliers ORDER BY fecha_registro DESC")
+        suppliers_data = cursor.fetchall()
+        suppliers = []
+        for sup in suppliers_data:
+            suppliers.append({
+                'id': sup[0], 'nombre': sup[1], 'empresa': sup[2],
+                'telefono': sup[3], 'email': sup[4], 'direccion': sup[5]
+            })
+        
+        # Transacciones
+        cursor.execute("SELECT * FROM transactions ORDER BY fecha_transaccion DESC LIMIT 20")
+        transactions_data = cursor.fetchall()
+        transactions = []
+        for trans in transactions_data:
+            transactions.append({
+                'id': trans[0], 'tipo': trans[1], 'descripcion': trans[2],
+                'monto': trans[3], 'categoria': trans[4], 'fecha_transaccion': trans[5]
+            })
+        
+        # Calcular totales financieros
+        cursor.execute("SELECT SUM(monto) FROM transactions WHERE tipo = 'ingreso' AND fecha_transaccion >= CURRENT_DATE - INTERVAL '30 days'")
+        total_ingresos = cursor.fetchone()[0] or 0
+        
+        cursor.execute("SELECT SUM(monto) FROM transactions WHERE tipo = 'gasto' AND fecha_transaccion >= CURRENT_DATE - INTERVAL '30 days'")
+        total_gastos = cursor.fetchone()[0] or 0
+        
+        cursor.execute("SELECT COUNT(*) FROM employees WHERE activo = true")
+        total_empleados = cursor.fetchone()[0] or 0
+        
+        cursor.close()
+        
+        return render_template("auth/erp_dashboard.html", 
+                             contacts=contacts, orders=orders, products=products,
+                             employees=employees, suppliers=suppliers, transactions=transactions,
+                             total_ingresos=total_ingresos, total_gastos=total_gastos, 
+                             total_empleados=total_empleados)
+    except Exception as ex:
+        flash("Error al cargar el dashboard ERP.")
+        return redirect(url_for('home'))
+
 @app.route('/contacts')
 @login_required
 def view_contacts():
@@ -132,6 +196,20 @@ def save_order():
         
         # Guardar en base de datos
         order_id = ModelOrder.save_order(db, order, items)
+        
+        # Registrar venta como ingreso en el sistema financiero
+        try:
+            cursor = db.connection.cursor()
+            productos_lista = ", ".join([item['name'] for item in cart_items])
+            descripcion = f"Venta #{order_id} - {productos_lista}"
+            cursor.execute("""
+                INSERT INTO transactions (tipo, descripcion, monto, categoria, metodo_pago)
+                VALUES (%s, %s, %s, %s, %s)
+            """, ('ingreso', descripcion, total_amount, 'ventas', 'efectivo'))
+            db.connection.commit()
+            cursor.close()
+        except Exception as ex:
+            print(f"Error registrando transacción financiera: {ex}")
         
         return {'success': True, 'order_id': order_id}
         

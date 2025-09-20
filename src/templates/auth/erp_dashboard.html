@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}ERP Dashboard - Amasijos Arcabuco{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary"><i class="fas fa-chart-line"></i> ERP Dashboard Ejecutivo</h2>
+                <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPIs Principales -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Ingresos del Mes</h6>
+                            <h3>${{ "%.0f"|format(total_ingresos) }}</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-dollar-sign fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Gastos del Mes</h6>
+                            <h3>${{ "%.0f"|format(total_gastos) }}</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-credit-card fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Ganancia Neta</h6>
+                            <h3>${{ "%.0f"|format(total_ingresos - total_gastos) }}</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-chart-pie fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Empleados Activos</h6>
+                            <h3>{{ total_empleados }}</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Módulos ERP -->
+    <ul class="nav nav-tabs" id="erpTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="reportes-tab" data-bs-toggle="tab" data-bs-target="#reportes" type="button" role="tab">
+                <i class="fas fa-chart-bar me-2"></i>Reportes Financieros
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ventas-tab" data-bs-toggle="tab" data-bs-target="#ventas" type="button" role="tab">
+                <i class="fas fa-shopping-cart me-2"></i>Ventas ({{ orders|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="empleados-tab" data-bs-toggle="tab" data-bs-target="#empleados" type="button" role="tab">
+                <i class="fas fa-users me-2"></i>Empleados ({{ employees|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="proveedores-tab" data-bs-toggle="tab" data-bs-target="#proveedores" type="button" role="tab">
+                <i class="fas fa-truck me-2"></i>Proveedores ({{ suppliers|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="inventario-tab" data-bs-toggle="tab" data-bs-target="#inventario" type="button" role="tab">
+                <i class="fas fa-boxes me-2"></i>Inventario ({{ products|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contactos-tab" data-bs-toggle="tab" data-bs-target="#contactos" type="button" role="tab">
+                <i class="fas fa-envelope me-2"></i>Contactos ({{ contacts|length }})
+            </button>
+        </li>
+    </ul>
+
+    <!-- Contenido de las Pestañas -->
+    <div class="tab-content mt-3" id="erpTabsContent">
+        <!-- Reportes Financieros -->
+        <div class="tab-pane fade show active" id="reportes" role="tabpanel">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-line"></i> Flujo de Caja Reciente</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="financeChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-list"></i> Transacciones Recientes</h5>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            {% for transaction in transactions[:10] %}
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <div>
+                                    <small class="text-muted">{{ transaction.descripcion[:30] }}...</small><br>
+                                    <span class="badge {% if transaction.tipo == 'ingreso' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ transaction.tipo.title() }}
+                                    </span>
+                                </div>
+                                <div class="text-end">
+                                    <strong {% if transaction.tipo == 'ingreso' %}class="text-success"{% else %}class="text-danger"{% endif %}>
+                                        ${{ "%.0f"|format(transaction.monto) }}
+                                    </strong><br>
+                                    <small class="text-muted">{{ transaction.fecha_transaccion.strftime('%d/%m') }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="tab-pane fade" id="ventas" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shopping-cart"></i> Gestión de Ventas</h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td><span class="badge bg-primary">#{{ order.id }}</span></td>
+                                        <td>{{ order.customer_name }}</td>
+                                        <td><strong>${{ "%.0f"|format(order.total_amount) }}</strong></td>
+                                        <td>
+                                            <span class="badge {% if order.status == 'pending' %}bg-warning{% else %}bg-success{% endif %}">
+                                                {{ order.status.title() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ order.fecha_orden.strftime('%d/%m/%Y') }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails({{ order.id }})">
+                                                Ver Detalles
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
+                            <h4>No hay ventas registradas</h4>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Empleados -->
+        <div class="tab-pane fade" id="empleados" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-users"></i> Recursos Humanos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Cargo</th>
+                                    <th>Salario</th>
+                                    <th>Teléfono</th>
+                                    <th>Fecha Contratación</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in employees %}
+                                <tr>
+                                    <td><span class="badge bg-info">#{{ employee.id }}</span></td>
+                                    <td>{{ employee.nombre }}</td>
+                                    <td>{{ employee.cargo }}</td>
+                                    <td><strong>${{ "%.0f"|format(employee.salario) }}</strong></td>
+                                    <td>{{ employee.telefono }}</td>
+                                    <td>{{ employee.fecha_contratacion.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if employee.activo %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proveedores -->
+        <div class="tab-pane fade" id="proveedores" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-truck"></i> Gestión de Proveedores</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Proveedor</th>
+                                    <th>Empresa</th>
+                                    <th>Contacto</th>
+                                    <th>Email</th>
+                                    <th>Dirección</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for supplier in suppliers %}
+                                <tr>
+                                    <td><span class="badge bg-warning">#{{ supplier.id }}</span></td>
+                                    <td>{{ supplier.nombre }}</td>
+                                    <td><strong>{{ supplier.empresa }}</strong></td>
+                                    <td>{{ supplier.telefono }}</td>
+                                    <td>{{ supplier.email }}</td>
+                                    <td>{{ supplier.direccion }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventario -->
+        <div class="tab-pane fade" id="inventario" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-boxes"></i> Control de Inventario</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for product in products %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ product.name.title() }}</h6>
+                                    <p class="card-text">
+                                        <strong>Precio:</strong> ${{ "%.0f"|format(product.price) }}<br>
+                                        <strong>Stock:</strong> 
+                                        <span class="badge {% if product.stock > 5 %}bg-success{% elif product.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ product.stock }} unidades
+                                        </span>
+                                    </p>
+                                    {% if product.stock <= 3 %}
+                                        <div class="alert alert-warning py-1">
+                                            <small><i class="fas fa-exclamation-triangle"></i> Stock bajo</small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contactos -->
+        <div class="tab-pane fade" id="contactos" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-envelope"></i> Gestión de Contactos</h5>
+                </div>
+                <div class="card-body">
+                    {% if contacts %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Ciudad</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in contacts %}
+                                    <tr>
+                                        <td><span class="badge bg-info">#{{ contact.id }}</span></td>
+                                        <td>{{ contact.nombre }}</td>
+                                        <td>{{ contact.correo }}</td>
+                                        <td>{{ contact.telefono }}</td>
+                                        <td>{{ contact.ciudad }}</td>
+                                        <td>{{ contact.fecha_envio.strftime('%d/%m/%Y') }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h4>No hay contactos</h4>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    border-radius: 0;
+}
+.nav-tabs .nav-link.active {
+    background-color: #f8f9fa;
+    border-bottom: 3px solid #007bff;
+    font-weight: bold;
+}
+.card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function viewOrderDetails(orderId) {
+    window.location.href = `/order_details/${orderId}`;
+}
+
+// Gráfico de finanzas
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('financeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            datasets: [{
+                label: 'Ingresos',
+                data: [450, 380, 520, 290, 680, 920, 750],
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Gastos',
+                data: [180, 150, 220, 190, 160, 280, 200],
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value + 'K';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
